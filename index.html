@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>JS Bin</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+
+<div id="budget" class="container-fluid">
+    <div class="row justify-content-center">
+        <h3 class="col-12 text-center alert alert-primary"
+        >
+            Your balance: <span>{{ this.pocket }}</span> $
+        </h3>
+        <div class="col-3">
+            <input class="form-control mb-3"
+                   type="text"
+                   v-model="goods"
+                   placeholder="enter any goods"
+            >
+            <input class="form-control mb-3"
+                   type="text"
+                   v-model="price"
+                   placeholder="enter price(only numbers)"
+                   @keypress="onlyNumber"
+            >
+            <button class="btn btn-primary mb-3"
+                    :disabled="!goods || !price"
+                    @click="addExpenses()"
+            >
+                Add expense
+            </button>
+            <h4>Your expenses:</h4>
+            <ul class="list-group"
+                v-for="item in expenses"
+            >
+                <li class="list-group-item">{{ item.goods}}, {{ item.price }} $</li>
+            </ul>
+        </div>
+        <div class="col-3">
+            <input class="form-control mb-3"
+                   type="text"
+                   v-model="type"
+                   placeholder="enter any type of income(salary, bonuses, win etc.)"
+            >
+            <input class="form-control mb-3"
+                   type="text"
+                   v-model="profit"
+                   placeholder="enter income(only numbers)"
+                   @keypress="onlyNumber"
+            >
+            <button class="btn btn-primary mb-3"
+                    :disabled="!type || !profit"
+                    @click="addIncome()"
+            >
+                Add income
+            </button>
+            <h4>Your incomes:</h4>
+            <ul class="list-group"
+                v-for="item in income"
+            >
+                <li class="list-group-item">{{ item.type }}, {{ item.profit}} $</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+<script type="text/javascript">
+    new Vue({
+        el: '#budget',
+        data() {
+            return {
+                pocket: 2000,
+                goods: null,
+                price: null,
+                profit: null,
+                type: null,
+                expenses: [],
+                income: [],
+            }
+        },
+
+        methods: {
+            addExpenses() {
+                this.expenses.push({goods: this.goods, price: this.price});
+                this.goods = '';
+                this.calculateBalance(this.price, false);
+                this.price = '';
+            },
+
+            addIncome() {
+                this.income.push({type: this.type, profit: this.profit});
+                this.type = '';
+                this.calculateBalance(this.profit, true);
+                this.profit = '';
+            },
+
+            calculateBalance(value, action) {
+                return action ? this.pocket += parseInt(value) : this.pocket -= parseInt(value);
+            },
+
+            onlyNumber ($event) {
+                let keyCode = ($event.keyCode ? $event.keyCode : $event.which);
+                if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) {
+                    $event.preventDefault();
+                }
+            }
+        },
+    })
+
+</script>
+
+</body>
+</html>
